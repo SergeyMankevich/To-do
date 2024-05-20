@@ -1,34 +1,26 @@
 import { useEffect, useState } from 'react';
-import { TODOS_URL } from '../constants';
+import { ref, onValue } from 'firebase/database';
+import { db } from '../firebase';
 import { filterTodos } from '../utils';
 
-export const useRequestGetTodos = ({ refreshProducts, newTodo, isSorting }) => {
+export const useRequestGetTodos = ({ newTodo, isSorting, isRemoving }) => {
 	const [todos, setTodos] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isError, setIsError] = useState(false);
 
 	useEffect(() => {
-		setIsError(false);
-		const Debounce = setTimeout(() => {
-			fetch(TODOS_URL)
-				.then((response) => {
-					if (response.ok !== true) {
-						throw new Error('Error with get data');
-					}
-					return response.json();
-				})
-				.then((loadedDate) => {
-					const findedTodos = filterTodos(newTodo, loadedDate);
-					setTodos(findedTodos);
-				})
-				.catch((err) => setIsError(err.message))
-				.finally(() => {
-					setIsLoading(false);
-				});
-		}, 300);
+		const todosDbRef = ref(db, 'todos');
 
-		return () => clearTimeout(Debounce);
-	}, [refreshProducts, newTodo, isSorting]);
+		setTodos([]);
 
-	return { todos, setTodos, isLoading, isError };
+		return onValue(todosDbRef, (snapshot) => {
+			const loadedProducts = snapshot.val() || {};
+
+			const findedTodos = filterTodos(newTodo, loadedProducts);
+			setTodos(findedTodos);
+			setIsLoading(false);
+		});
+	}, [isSorting, newTodo, isRemoving]);
+
+	return { todos, isLoading, isError };
 };

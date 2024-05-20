@@ -1,8 +1,8 @@
 export const filterTodos = (searchText, listOfTodos) => {
 	if (!searchText) {
-		return listOfTodos;
+		return Object.entries(listOfTodos);
 	}
-	return listOfTodos.filter(({ title }) =>
+	return Object.entries(listOfTodos).filter(([id, { title, completed }]) =>
 		title.toLowerCase().includes(searchText.toLowerCase()),
 	);
 };

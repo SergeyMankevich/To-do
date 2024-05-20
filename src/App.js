@@ -6,60 +6,52 @@ import styles from './app.module.css';
 import { useState } from 'react';
 
 export const App = () => {
-	const [refreshProducts, setRefreshProducts] = useState(false);
 	const [newTodo, setNewTodo] = useState('');
 	const [isSorting, setIsSorting] = useState(false);
+	const [isRemoving, setIsRemoving] = useState(false);
 
-	const { isLoading, todos, setTodos, isError } = useRequestGetTodos({
-		refreshProducts,
+	const { isLoading, todos, isError } = useRequestGetTodos({
 		newTodo,
 		isSorting,
+		isRemoving,
 	});
 
-	const { sortedTodos, setSortedTodos } = useRequestSortTodos({
-		refreshProducts,
+	const { isSortedLoading, sortedTodos, isSortedError } = useRequestSortTodos({
 		newTodo,
 		isSorting,
+		isRemoving,
 	});
 	return (
 		<div className={styles.app}>
 			<h1>To-do</h1>
 			<MainInput
-				refreshProducts={refreshProducts}
-				setRefreshProducts={setRefreshProducts}
 				newTodo={newTodo}
 				setNewTodo={setNewTodo}
 				isSorting={isSorting}
 				setIsSorting={setIsSorting}
-				setTodos={setTodos}
-				setSortedTodos={setSortedTodos}
 			/>
-			{isLoading ? (
+			{isLoading || isSortedLoading ? (
 				<HashLoader className={styles.loader} color="#646464" />
-			) : isError ? (
+			) : isError || isSortedError ? (
 				<h2 className={styles.error}>{isError}</h2>
 			) : isSorting ? (
-				sortedTodos.map(({ id, title, completed }) => (
+				sortedTodos.map(([id, { title, completed }]) => (
 					<Task
 						id={id}
 						title={title}
 						completed={completed}
-						refreshProducts={refreshProducts}
-						setRefreshProducts={setRefreshProducts}
-						setTodos={setTodos}
-						setSortedTodos={setSortedTodos}
+						isRemoving={isRemoving}
+						setIsRemoving={setIsRemoving}
 					/>
 				))
 			) : (
-				todos.map(({ id, title, completed }) => (
+				todos.map(([id, { title, completed }]) => (
 					<Task
 						id={id}
 						title={title}
 						completed={completed}
-						refreshProducts={refreshProducts}
-						setRefreshProducts={setRefreshProducts}
-						setTodos={setTodos}
-						setSortedTodos={setSortedTodos}
+						isRemoving={isRemoving}
+						setIsRemoving={setIsRemoving}
 					/>
 				))
 			)}

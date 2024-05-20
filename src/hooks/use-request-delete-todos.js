@@ -1,27 +1,21 @@
 import { useState } from 'react';
-import { TODOS_URL } from '../constants';
+import { ref, remove } from 'firebase/database';
+import { db } from '../firebase';
 
-export const useRequestDeleteTodos = ({ id, refreshProducts, setRefreshProducts }) => {
+export const useRequestDeleteTodos = ({ id }) => {
 	const [isDeleting, setIsDeleting] = useState(false);
 
 	const requestDeleteTodo = () => {
 		setIsDeleting(true);
-		// setIsError(false);
 
-		fetch(`${TODOS_URL}/${id}`, {
-			method: 'DELETE',
-		})
+		const todosDbRef = ref(db, `todos/${id}`);
+
+		remove(todosDbRef)
 			.then((response) => {
-				// if (response.ok !== true) {
-				// 	throw new Error('Error with get data');
-				// }
-				return response.json();
+				console.log('Todo delete:', response);
 			})
-			.then((loadedDate) => {
-				setRefreshProducts(!refreshProducts);
-			})
-			// .catch((err) => setIsError(err.message))
 			.finally(() => setIsDeleting(false));
+		// setIsError(false);
 	};
 
 	return { requestDeleteTodo, isDeleting };

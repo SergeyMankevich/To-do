@@ -1,18 +1,9 @@
 import styles from './add-todo.module.css';
 import { useRequestAddTodos } from '../../../hooks';
 
-export const AddTodo = ({
-	newTodo,
-	refreshProducts,
-	setRefreshProducts,
-	setNewTodo,
-	setTodos,
-	setSortedTodos,
-}) => {
+export const AddTodo = ({ newTodo, setNewTodo }) => {
 	const { isCreating, requestAddTodo } = useRequestAddTodos({
 		newTodo,
-		refreshProducts,
-		setRefreshProducts,
 	});
 
 	return (
@@ -24,8 +15,6 @@ export const AddTodo = ({
 				event.preventDefault();
 				if (newTodo) {
 					setNewTodo('');
-					setTodos([]);
-					setSortedTodos([]);
 					requestAddTodo();
 				}
 			}}

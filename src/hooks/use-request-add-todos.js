@@ -1,31 +1,22 @@
 import { useState } from 'react';
-import { TODOS_URL } from '../constants';
+import { ref, push } from 'firebase/database';
+import { db } from '../firebase';
 
-export const useRequestAddTodos = ({ newTodo, refreshProducts, setRefreshProducts }) => {
+export const useRequestAddTodos = ({ newTodo }) => {
 	const [isCreating, setIsCreating] = useState(false);
 
 	const requestAddTodo = () => {
 		setIsCreating(true);
-		// setIsError(false);
 
-		fetch(TODOS_URL, {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json;charset=utf-8' },
-			body: JSON.stringify({
-				title: newTodo,
-				completed: false,
-			}),
+		const todosDbRef = ref(db, 'todos');
+
+		push(todosDbRef, {
+			title: newTodo,
+			completed: false,
 		})
 			.then((response) => {
-				// if (response.ok !== true) {
-				// 	throw new Error('Error with get data');
-				// }
-				return response.json();
+				console.log('Todo add:', response);
 			})
-			.then((loadedDate) => {
-				setRefreshProducts(!refreshProducts);
-			})
-			// .catch((err) => setIsError(err.message))
 			.finally(() => setIsCreating(false));
 	};
 

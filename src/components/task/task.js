@@ -4,15 +4,7 @@ import { DeleteTodo } from '../buttons/delete-todo';
 import { UpdateTodo } from '../buttons/update-todo';
 import { useRequestUpdateTodos } from '../../hooks';
 
-export const Task = ({
-	id,
-	title,
-	completed,
-	refreshProducts,
-	setRefreshProducts,
-	setTodos,
-	setSortedTodos,
-}) => {
+export const Task = ({ id, title, completed, isRemoving, setIsRemoving }) => {
 	const [isEditing, setIsEditing] = useState(false);
 	const [isCompleted, setIsCompleted] = useState(completed);
 	const [updatedTodo, setUpdatedTodo] = useState(title);
@@ -21,12 +13,10 @@ export const Task = ({
 		id,
 		updatedTodo,
 		isCompleted,
-		refreshProducts,
-		setRefreshProducts,
 	});
 
 	return (
-		<div className={styles.task}>
+		<div key={id} className={styles.task}>
 			<input
 				className={styles.checkbox}
 				checked={isCompleted}
@@ -43,7 +33,6 @@ export const Task = ({
 					className={
 						isCompleted ? styles.descriptionCompletedTask : styles.description
 					}
-					key={id}
 					value={updatedTodo}
 					onChange={({ target }) => setUpdatedTodo(target.value)}
 					onBlur={() => {
@@ -57,17 +46,12 @@ export const Task = ({
 					isCompleted={isCompleted}
 					isUpdating={isUpdating}
 					isEditing={isEditing}
+					requestUpdateTodo={requestUpdateTodo}
 					setIsEditing={setIsEditing}
 				/>
 			</form>
 
-			<DeleteTodo
-				id={id}
-				refreshProducts={refreshProducts}
-				setRefreshProducts={setRefreshProducts}
-				setTodos={setTodos}
-				setSortedTodos={setSortedTodos}
-			/>
+			<DeleteTodo id={id} isRemoving={isRemoving} setIsRemoving={setIsRemoving} />
 		</div>
 	);
 };
