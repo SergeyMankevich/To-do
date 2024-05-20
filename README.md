@@ -1,6 +1,6 @@
 # To-do app
 
-#### To-do with JSON Server
+#### To-do with Firebase
 #### In this app you can:
 #### -Create to-do
 #### -Delete to-do
