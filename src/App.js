@@ -15,7 +15,7 @@ export const App = () => {
 				<h2 className={styles.error}>{isError}</h2>
 			) : (
 				todos.map(({ id, title, completed }) => (
-					<Task id={id} title={title} completed={completed} />
+					<Task key={id} title={title} completed={completed} />
 				))
 			)}
 		</div>
